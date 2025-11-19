@@ -1,0 +1,77 @@
+@use './variables' as *;
+@use './mixins' as *;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: $line-height-normal;
+  color: $color-text-primary;
+  background-color: $color-background-secondary;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+// Ensure links are accessible
+a {
+  color: $color-primary;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  @include focus-visible;
+}
+
+// Button reset
+button {
+  font-family: inherit;
+  
+  @include focus-visible;
+}
+
+// Form elements
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  
+  @include focus-visible;
+}
+
+// Skip to main content link (accessibility)
+.skip-link {
+  @include visually-hidden;
+
+  &:focus {
+    position: fixed;
+    top: $spacing-sm;
+    left: $spacing-sm;
+    z-index: $z-index-tooltip;
+    padding: $spacing-sm $spacing-md;
+    background: $color-primary;
+    color: white;
+    border-radius: $radius-md;
+    text-decoration: none;
+    width: auto;
+    height: auto;
+    clip: auto;
+    overflow: visible;
+    white-space: normal;
+  }
+}
