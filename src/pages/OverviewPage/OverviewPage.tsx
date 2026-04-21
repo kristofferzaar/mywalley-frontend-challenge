@@ -6,6 +6,8 @@ import { TransactionListItem } from '../TransactionsPage/components/TransactionL
 import { needsAttention, getAttentionReason, getRecentTransactions } from '../../utils/transactionUtils';
 import './OverviewPage.scss';
 
+const PREVIEW_LIMIT = 5;
+
 export function OverviewPage() {
   const query = useGetTransactions();
 
@@ -14,7 +16,6 @@ export function OverviewPage() {
       <h1>My Payments</h1>
       <QueryWrapper query={query} loadingMessage="Loading your payments">
         {(data) => {
-          const PREVIEW_LIMIT = 5;
           const allAttention = data.filter(needsAttention);
           const recent = getRecentTransactions(
             data.filter((t) => !needsAttention(t)),
