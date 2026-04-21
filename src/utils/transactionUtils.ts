@@ -2,10 +2,11 @@ import type {
   Transaction,
   TransactionStatus,
   PaymentMethodType,
+  PaymentType,
   TransactionFilters,
   DateRangeOption,
+  InstallmentPlan,
 } from '../types/transaction';
-import type { PaymentType } from '../types/transaction';
 import { formatCurrency } from './currencyUtils';
 import { formatTransactionDate, isPastDate, isDateInRange } from './dateUtils';
 
@@ -131,4 +132,30 @@ export function isFiltersActive(filters: TransactionFilters): boolean {
     filters.paymentType !== DEFAULT_FILTERS.paymentType ||
     filters.dateRange !== DEFAULT_FILTERS.dateRange
   );
+}
+
+export interface InstallmentItem {
+  number: number;
+  date: Date;
+  amount: number;
+  paid: boolean;
+  overdue: boolean;
+}
+
+export function deriveInstallmentSchedule(plan: InstallmentPlan): InstallmentItem[] {
+  const { totalInstallments, paidInstallments, nextPaymentDate, installmentAmount, frequency } = plan;
+  const next = new Date(nextPaymentDate);
+  const now = new Date();
+
+  return Array.from({ length: totalInstallments }, (_, i) => {
+    const offset = i - paidInstallments;
+    const date = new Date(next);
+    if (frequency === 'monthly') {
+      date.setMonth(date.getMonth() + offset);
+    } else {
+      date.setDate(date.getDate() + offset * 14);
+    }
+    const paid = i < paidInstallments;
+    return { number: i + 1, date, amount: installmentAmount, paid, overdue: !paid && date < now };
+  });
 }
