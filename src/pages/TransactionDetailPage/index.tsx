@@ -1,21 +1,14 @@
 import { useParams } from 'react-router-dom';
 import { useGetTransaction } from '../../queries/useGetTransaction';
+import { QueryWrapper } from '../../components/QueryWrapper';
 
 export function TransactionDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, isError } = useGetTransaction(id ?? '');
-
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
-
-  if (isError) {
-    return <p>Can't load transaction</p>;
-  }
+  const query = useGetTransaction(id ?? '');
 
   return (
-    <>
-      <h1>{data?.merchantName}</h1>
-    </>
+    <QueryWrapper query={query} loadingMessage="Loading transaction">
+      {(data) => <h1>{data.merchantName}</h1>}
+    </QueryWrapper>
   );
 }
