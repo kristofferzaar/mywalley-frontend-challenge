@@ -31,9 +31,8 @@
 
 .overview__attention {
   background: $color-error-light;
-  border-radius: $radius-md;
   padding: $spacing-md;
-  margin-bottom: $spacing-lg;
+  margin: 0 (-$spacing-md) $spacing-lg;
 
   .overview__section-header h2,
   .overview__section-heading {
@@ -43,8 +42,8 @@
 
 .overview__recent {
   background: $color-background-secondary;
-  border-radius: $radius-md;
   padding: $spacing-md;
+  margin: 0 (-$spacing-md);
 
   .overview__section-header h2 {
     color: $color-text-secondary;

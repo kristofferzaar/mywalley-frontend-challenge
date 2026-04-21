@@ -3,8 +3,8 @@
 
 .transactions {
   background: $color-background-secondary;
-  border-radius: $radius-md;
   padding: $spacing-md;
+  margin: 0 (-$spacing-md);
 
   &__count {
     font-size: $font-size-sm;
