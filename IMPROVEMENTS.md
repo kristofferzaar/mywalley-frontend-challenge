@@ -16,3 +16,4 @@
 
 - Remove the 1500ms simulated delay in `getTransactions`
 - `QueryWrapper` error message is a static "Something went wrong" - should reflect the actual error type (network failure vs 404 vs 500) so users know whether to retry or contact support
+- Remove DEMO_RECENT in transactionApi

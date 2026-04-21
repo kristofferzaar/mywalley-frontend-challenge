@@ -7,7 +7,7 @@ import type {
 } from '../types/transaction';
 import type { PaymentType } from '../types/transaction';
 import { formatCurrency } from './currencyUtils';
-import { formatDate, isPastDate, isDateInRange } from './dateUtils';
+import { formatTransactionDate, isPastDate, isDateInRange } from './dateUtils';
 
 export const PAYMENT_TYPE_LABELS: Record<PaymentType, string> = {
   full: 'Full payment',
@@ -33,7 +33,7 @@ export function formatTransactionLabel(
   attentionReason?: string
 ): string {
   const statusLabel = attentionReason ?? STATUS_LABELS[status];
-  return `${merchantName}, ${formatCurrency(totalAmount)}, ${statusLabel}, ${formatDate(purchaseDate)}, ${PAYMENT_METHOD_LABELS[paymentMethod.type]} ending in ${paymentMethod.last4}`;
+  return `${merchantName}, ${formatCurrency(totalAmount)}, ${statusLabel}, ${formatTransactionDate(purchaseDate)}, ${PAYMENT_METHOD_LABELS[paymentMethod.type]} ending in ${paymentMethod.last4}`;
 }
 
 export function getAttentionReason(transaction: Transaction): string | null {

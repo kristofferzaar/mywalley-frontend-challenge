@@ -49,6 +49,16 @@ export const isPastDate = (dateString: string): boolean => {
 };
 
 /**
+ * Format a date for display in transaction lists - relative for recent dates, absolute for older ones
+ */
+export const formatTransactionDate = (dateString: string): string => {
+  const diffInDays = Math.floor(
+    (new Date().getTime() - new Date(dateString).getTime()) / (1000 * 60 * 60 * 24)
+  );
+  return diffInDays < 7 ? formatRelativeTime(dateString) : formatDate(dateString);
+};
+
+/**
  * Check if a date is within a date range
  * @param dateString - ISO date string to check
  * @param startDate - Start of range (ISO date string)
