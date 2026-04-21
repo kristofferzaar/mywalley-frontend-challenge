@@ -1,0 +1,16 @@
+@use '../../styles/variables' as *;
+
+.transactions {
+  background: $color-background-secondary;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+
+  &__count {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: $spacing-sm;
+  }
+}
