@@ -1,0 +1,80 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  max-width: $breakpoint-desktop;
+  margin: 0 auto;
+}
+
+.app-header {
+  background: $color-primary;
+  padding: $spacing-sm $spacing-md;
+  display: flex;
+  justify-content: center;
+
+  @include desktop {
+    border-radius: 0 0 $radius-md $radius-md;
+  }
+
+  &__logo {
+    height: 28px;
+    width: auto;
+  }
+}
+
+main {
+  flex: 1;
+  padding: $spacing-md;
+  padding-bottom: calc(#{$spacing-md} + 64px);
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: $breakpoint-desktop;
+  height: 64px;
+
+  @include desktop {
+    border-radius: $radius-md $radius-md 0 0;
+    overflow: hidden;
+  }
+  background: $color-background;
+  border-top: 1px solid $color-border;
+  display: flex;
+  z-index: $z-index-sticky;
+
+  &__item + &__item {
+    border-left: 1px solid $color-border;
+  }
+
+  &__item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $color-text-secondary;
+    text-decoration: none;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    min-height: $touch-target-min;
+    transition: color $transition-fast;
+
+    &:hover {
+      color: $color-text-primary;
+      text-decoration: none;
+    }
+
+    &.active {
+      background: $color-primary;
+      color: white;
+    }
+
+    @include focus-visible;
+  }
+}

@@ -1,0 +1,168 @@
+@use '../../styles/variables' as *;
+@use '../../styles/mixins' as *;
+
+.back-link {
+  display: inline-block;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  text-decoration: none;
+  margin-bottom: $spacing-md;
+
+  &:hover {
+    color: $color-text-primary;
+    text-decoration: none;
+  }
+
+  @include focus-visible;
+}
+
+.detail-hero {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: $spacing-md;
+  margin-bottom: $spacing-lg;
+
+  &__amount {
+    font-size: $font-size-xxxl;
+    font-weight: $font-weight-bold;
+    color: $color-text-primary;
+  }
+
+  &__status {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-medium;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $radius-full;
+    white-space: nowrap;
+
+    &--completed {
+      background: $color-success-light;
+      color: $color-success;
+    }
+    &--active {
+      background: $color-primary-light;
+      color: $color-primary;
+    }
+    &--pending {
+      background: $color-warning-light;
+      color: $color-warning;
+    }
+    &--failed {
+      background: $color-error-light;
+      color: $color-error;
+    }
+    &--cancelled {
+      background: $color-background-tertiary;
+      color: $color-text-secondary;
+    }
+  }
+}
+
+.detail-section {
+  margin-bottom: $spacing-lg;
+}
+
+.detail-list {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0 $spacing-md;
+
+  dt,
+  dd {
+    padding: $spacing-sm 0;
+    font-size: $font-size-sm;
+    border-bottom: 1px solid $color-border;
+  }
+
+  dt:first-child,
+  dd:first-of-type {
+    border-top: 1px solid $color-border;
+  }
+
+  dt {
+    color: $color-text-secondary;
+  }
+
+  dd {
+    margin: 0;
+    font-weight: $font-weight-medium;
+    text-align: right;
+  }
+}
+
+.installment-schedule {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  &__item {
+    display: grid;
+    grid-template-columns: 1.5rem 1fr auto auto;
+    align-items: center;
+    gap: $spacing-sm;
+    padding: $spacing-sm 0;
+    border-bottom: 1px solid $color-border;
+    font-size: $font-size-sm;
+
+    &:first-child {
+      border-top: 1px solid $color-border;
+    }
+
+    &--paid {
+      color: $color-text-disabled;
+    }
+
+    &--overdue {
+      color: $color-error;
+    }
+  }
+
+  &__number {
+    color: $color-text-disabled;
+    font-size: $font-size-xs;
+  }
+
+  &__date {
+    color: inherit;
+  }
+
+  &__amount {
+    font-weight: $font-weight-medium;
+  }
+
+  &__status {
+    font-size: $font-size-xs;
+    color: inherit;
+    text-align: right;
+  }
+
+  &__summary {
+    margin-top: $spacing-sm;
+    font-size: $font-size-sm;
+    color: $color-text-secondary;
+  }
+}
+
+.detail-pay-now {
+  background: $color-error-light;
+  padding: $spacing-md;
+  border-radius: $radius-md;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: $spacing-sm;
+
+  &__reason {
+    margin: 0;
+    font-weight: $font-weight-semibold;
+    color: $color-error;
+  }
+
+  &__footnote {
+    margin: 0;
+    font-size: $font-size-xs;
+    color: $color-text-secondary;
+  }
+}

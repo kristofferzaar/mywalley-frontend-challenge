@@ -25,6 +25,18 @@ body {
   min-height: 100vh;
 }
 
+h1 {
+  margin-bottom: $spacing-md;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-bottom: $spacing-sm;
+}
+
 // Ensure links are accessible
 a {
   color: $color-primary;
