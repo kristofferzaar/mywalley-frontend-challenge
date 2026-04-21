@@ -2,6 +2,10 @@
 
 ## Project Setup & Architecture
 
+### Test data
+
+Most of the `nextPaymentDate` were overdue (old, static dates), but the instructions only mentioned `txn_012` as being in the past - modified the file to be more realistic.
+
 ### Data Fetching: TanStack Query
 Even though the data comes from a static JSON file, I chose to use TanStack Query to simulate a real API integration. This gives loading, error, and success states for free and mirrors how the app would behave against a real backend. As a direct result of this, I moved the data/transactions to ./public/api, this ensures that a real HTTP request will be fired.
 
@@ -10,6 +14,9 @@ Added a `transactionsApi.ts` that will ensure correct typed responses - it's als
 
 ### Routing & Layout
 Created a React Router layout wrapper + opted for a separate page instead of a modal - simpler accessibility (no focus trap), natural navigation.
+
+### Overview page
+The home page is a dashboard rather than a flat list. It prioritises transactions that need action (failed payments, overdue installments) in a visually distinct section at the top, followed by the 5 most recent non-attention transactions and a link to the full list.
 
 ### Transaction List
 Each transaction renders as a card - this works well on mobile without needing a table or grid. Status is shown as a colored badge using the existing SCSS variables. The link has an `aria-label` with a formatted summary so screen readers announce something human-friendly rather than reading each span separately.

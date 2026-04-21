@@ -3,10 +3,10 @@ import { Outlet } from 'react-router-dom';
 export function Layout() {
   return (
     <div className="app">
-      <header>
+      <header aria-label="Walley">
         <span>Walley</span>
       </header>
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
         <Outlet />
       </main>
     </div>

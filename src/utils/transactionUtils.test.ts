@@ -27,7 +27,7 @@ describe('STATUS_LABELS', () => {
 describe('formatTransactionLabel', () => {
   it('returns merchant, amount, status and date in the correct order for screen readers', () => {
     expect(formatTransactionLabel(mockTransaction)).toBe(
-      `Spotify, ${formatCurrency(149)}, Completed, ${formatDate('2024-01-15T00:00:00Z')}`
+      `Spotify, ${formatCurrency(149)}, Completed, ${formatDate('2024-01-15T00:00:00Z')}, Credit card ending in 4242`
     );
   });
 

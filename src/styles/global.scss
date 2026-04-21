@@ -54,6 +54,10 @@ textarea {
   @include focus-visible;
 }
 
+.sr-only {
+  @include visually-hidden;
+}
+
 // Skip to main content link (accessibility)
 .skip-link {
   @include visually-hidden;

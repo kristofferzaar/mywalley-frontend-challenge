@@ -1,0 +1,40 @@
+@use '../../styles/variables' as *;
+
+.overview__attention {
+  background: $color-error-light;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  margin-bottom: $spacing-lg;
+
+  h2 {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-error;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: $spacing-sm;
+  }
+}
+
+.overview__recent {
+  background: $color-background-secondary;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+
+  h2 {
+    font-size: $font-size-sm;
+    font-weight: $font-weight-semibold;
+    color: $color-text-secondary;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: $spacing-sm;
+  }
+}
+
+.overview__show-all {
+  display: block;
+  text-align: center;
+  margin-top: $spacing-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+}
