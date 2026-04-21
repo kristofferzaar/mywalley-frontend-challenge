@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { Transaction } from '../../../types/transaction';
 import { TransactionListItem } from './TransactionListItem';
 import './TransactionList.scss';
@@ -6,7 +7,7 @@ interface TransactionListProps {
   transactions: Transaction[];
 }
 
-export function TransactionList({ transactions }: TransactionListProps) {
+export const TransactionList = memo(function TransactionList({ transactions }: TransactionListProps) {
   return (
     <ul className="transaction-list">
       {transactions.map((transaction) => (
@@ -14,4 +15,4 @@ export function TransactionList({ transactions }: TransactionListProps) {
       ))}
     </ul>
   );
-}
+});

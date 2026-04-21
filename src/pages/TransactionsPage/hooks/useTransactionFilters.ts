@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import type { Transaction, TransactionFilters } from '../../../types/transaction';
 import {
@@ -31,9 +32,12 @@ function filtersToParams(filters: TransactionFilters): Record<string, string> {
 export function useTransactionFilters(transactions: Transaction[]) {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const appliedFilters = filtersFromParams(searchParams);
-  const filteredTransactions = applyFiltersFn(transactions, appliedFilters);
-  const filtersActive = isFiltersActive(appliedFilters);
+  const appliedFilters = useMemo(() => filtersFromParams(searchParams), [searchParams]);
+  const filteredTransactions = useMemo(
+    () => applyFiltersFn(transactions, appliedFilters),
+    [transactions, appliedFilters]
+  );
+  const filtersActive = useMemo(() => isFiltersActive(appliedFilters), [appliedFilters]);
 
   function applyFilters(filters: TransactionFilters) {
     setSearchParams(filtersToParams(filters), { replace: true });
