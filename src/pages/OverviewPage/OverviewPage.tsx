@@ -26,9 +26,9 @@ export function OverviewPage() {
             <>
               {allAttention.length > 0 && (
                 <section className="overview__attention">
-                  <h2>Needs attention</h2>
+                  <h2 className="overview__section-heading">Needs attention</h2>
                   <ul className="transaction-list">
-                    {allAttention.slice(0, PREVIEW_LIMIT).map((t) => (
+                    {allAttention.map((t) => (
                       <TransactionListItem
                         key={t.id}
                         transaction={t}
@@ -36,19 +36,14 @@ export function OverviewPage() {
                       />
                     ))}
                   </ul>
-                  {allAttention.length > PREVIEW_LIMIT && (
-                    <Link to="/transactions" className="overview__show-all">
-                      Show all {allAttention.length} transactions needing attention
-                    </Link>
-                  )}
                 </section>
               )}
               <section className="overview__recent">
-                <h2>Recent transactions</h2>
+                <div className="overview__section-header">
+                  <h2>Recent transactions</h2>
+                  <Link to="/transactions" className="overview__section-link" aria-label="See all recent transactions">See all</Link>
+                </div>
                 <TransactionList transactions={recent} />
-                <Link to="/transactions" className="overview__show-all">
-                  Show all transactions
-                </Link>
               </section>
             </>
           );

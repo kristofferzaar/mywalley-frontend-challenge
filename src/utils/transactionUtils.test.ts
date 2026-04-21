@@ -1,5 +1,13 @@
 // @vitest-environment node
-import { formatTransactionLabel, STATUS_LABELS } from './transactionUtils';
+import {
+  formatTransactionLabel,
+  STATUS_LABELS,
+  filterByStatus,
+  filterByPaymentType,
+  filterByDateRange,
+  applyFilters,
+  DEFAULT_FILTERS,
+} from './transactionUtils';
 import { formatCurrency } from './currencyUtils';
 import { formatDate } from './dateUtils';
 import type { Transaction } from '../types/transaction';
@@ -35,5 +43,85 @@ describe('formatTransactionLabel', () => {
     const failed = { ...mockTransaction, status: 'failed' } as Transaction;
     expect(formatTransactionLabel(failed)).toContain('Failed');
     expect(formatTransactionLabel(failed)).not.toContain('failed');
+  });
+});
+
+const recentTransaction: Transaction = {
+  ...mockTransaction,
+  id: 'txn_recent',
+  purchaseDate: new Date().toISOString(),
+};
+
+const oldTransaction: Transaction = {
+  ...mockTransaction,
+  id: 'txn_old',
+  purchaseDate: '2020-01-01T00:00:00Z',
+};
+
+describe('filterByStatus', () => {
+  it("returns all transactions when status is 'all'", () => {
+    expect(filterByStatus([mockTransaction, recentTransaction], 'all')).toHaveLength(2);
+  });
+
+  it('filters to only matching status', () => {
+    const pending = { ...mockTransaction, id: 'txn_p', status: 'pending' } as Transaction;
+    const result = filterByStatus([mockTransaction, pending], 'pending');
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('txn_p');
+  });
+});
+
+describe('filterByPaymentType', () => {
+  it("returns all transactions when paymentType is 'all'", () => {
+    expect(filterByPaymentType([mockTransaction], 'all')).toHaveLength(1);
+  });
+
+  it('filters to only matching payment type', () => {
+    const installment = { ...mockTransaction, id: 'txn_i', paymentType: 'installment' } as Transaction;
+    const result = filterByPaymentType([mockTransaction, installment], 'installment');
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('txn_i');
+  });
+});
+
+describe('filterByDateRange', () => {
+  it("returns all transactions when dateRange is 'all'", () => {
+    expect(filterByDateRange([recentTransaction, oldTransaction], 'all', '', '')).toHaveLength(2);
+  });
+
+  it("'last30' excludes transactions older than 30 days", () => {
+    const result = filterByDateRange([recentTransaction, oldTransaction], 'last30', '', '');
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('txn_recent');
+  });
+
+  it("'custom' filters by dateFrom and dateTo", () => {
+    const result = filterByDateRange(
+      [recentTransaction, oldTransaction],
+      'custom',
+      '2019-01-01',
+      '2020-12-31'
+    );
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('txn_old');
+  });
+});
+
+describe('applyFilters', () => {
+  it('applies all filters together', () => {
+    const installmentRecent: Transaction = {
+      ...recentTransaction,
+      id: 'txn_ir',
+      paymentType: 'installment',
+      status: 'active',
+    };
+    const result = applyFilters([recentTransaction, oldTransaction, installmentRecent], {
+      ...DEFAULT_FILTERS,
+      paymentType: 'installment',
+      status: 'active',
+      dateRange: 'last30',
+    });
+    expect(result).toHaveLength(1);
+    expect(result[0].id).toBe('txn_ir');
   });
 });
