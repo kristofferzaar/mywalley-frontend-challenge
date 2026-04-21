@@ -22,4 +22,19 @@
       background: $color-primary-light;
     }
   }
+
+  &--outline {
+    background: $color-background;
+    color: $color-text-primary;
+    border: 1px solid $color-border;
+
+    &:hover:not(:disabled) {
+      background: $color-background-secondary;
+    }
+
+    &.is-active {
+      border-color: $color-primary;
+      color: $color-primary;
+    }
+  }
 }

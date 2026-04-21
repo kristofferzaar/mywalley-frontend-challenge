@@ -33,3 +33,13 @@ export interface Transaction {
 export interface TransactionsData {
   transactions: Transaction[];
 }
+
+export type DateRangeOption = 'last30' | 'last90' | 'lastYear' | 'custom' | 'all';
+
+export interface TransactionFilters {
+  status: TransactionStatus | 'all';
+  paymentType: PaymentType | 'all';
+  dateRange: DateRangeOption;
+  dateFrom: string;
+  dateTo: string;
+}

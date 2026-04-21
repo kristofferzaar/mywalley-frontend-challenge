@@ -1,0 +1,70 @@
+@use '../../../../styles/variables' as *;
+@use '../../../../styles/mixins' as *;
+
+.filter-panel {
+  background: $color-background;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  padding: $spacing-md;
+  margin-bottom: $spacing-md;
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    @include tablet {
+      flex-direction: row;
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+    flex: 1;
+
+    label {
+      font-size: $font-size-sm;
+      font-weight: $font-weight-medium;
+      color: $color-text-secondary;
+    }
+
+    select,
+    input[type='date'] {
+      width: 100%;
+      padding: $spacing-sm;
+      font-size: $font-size-base;
+      font-family: inherit;
+      border: 1px solid $color-border;
+      border-radius: $radius-sm;
+      background: $color-background;
+      color: $color-text-primary;
+      min-height: $touch-target-min;
+
+      @include focus-visible;
+    }
+  }
+
+  &__date-range {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    margin-top: $spacing-md;
+
+    @include tablet {
+      flex-direction: row;
+    }
+
+    .filter-panel__field {
+      flex: 1;
+    }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: $spacing-sm;
+    margin-top: $spacing-md;
+  }
+}
