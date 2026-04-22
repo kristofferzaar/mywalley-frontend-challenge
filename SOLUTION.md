@@ -2,6 +2,8 @@
 
 The app is structured around two main pages: an **Overview** dashboard that surfaces what needs attention first, and a **Transactions** list with filtering and sorting. Selecting a transaction opens a detail page where installment schedules and pay-now actions live. Accessibility, analytics, and clean data-fetching patterns were treated as first-class requirements throughout.
 
+A few screenshots is available on the [project wiki](https://github.com/kristofferzaar/mywalley-frontend-challenge/wiki).
+
 ---
 
 ## App structure
