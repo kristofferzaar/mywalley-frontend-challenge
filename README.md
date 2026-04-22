@@ -1,5 +1,12 @@
 # Walley Frontend Developer Code Challenge
 
+## Submission
+
+See [Solution write-up](SOLUTION.md) and [Improvements & production considerations](IMPROVEMENTS.md) for details.
+
+Regards,
+Kristoffer Zaar
+
 ## Introduction
 
 Welcome! We're excited to see how you approach building user-facing payment features at Walley.
