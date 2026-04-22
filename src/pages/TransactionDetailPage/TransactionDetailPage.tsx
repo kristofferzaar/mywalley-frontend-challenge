@@ -43,7 +43,7 @@ function InstallmentSchedule({
             className={[
               'installment-schedule__item',
               item.paid && 'installment-schedule__item--paid',
-              item.overdue && 'installment-schedule__item--overdue',
+              item.overdue && transaction.status !== 'cancelled' && 'installment-schedule__item--overdue',
             ]
               .filter(Boolean)
               .join(' ')}
@@ -52,16 +52,19 @@ function InstallmentSchedule({
             <span className="installment-schedule__date">{formatDate(item.date.toISOString())}</span>
             <span className="installment-schedule__amount">{formatCurrency(item.amount)}</span>
             {item.number === firstOverdueNumber && onPayInstallment ? (
-              <Button
-                variant="outline"
-                className="installment-schedule__pay-btn"
-                onClick={() => onPayInstallment()}
-              >
-                Pay now
-              </Button>
+              <>
+                <span className="sr-only">Overdue</span>
+                <Button
+                  variant="outline"
+                  className="installment-schedule__pay-btn"
+                  onClick={() => onPayInstallment()}
+                >
+                  Pay now
+                </Button>
+              </>
             ) : (
               <span className="installment-schedule__status">
-                {item.paid ? 'Paid' : item.overdue ? 'Overdue' : 'Upcoming'}
+                {item.paid ? 'Paid' : transaction.status === 'cancelled' ? 'Cancelled' : item.overdue ? 'Overdue' : 'Upcoming'}
               </span>
             )}
           </li>
@@ -85,6 +88,14 @@ function PayNowSection({ transaction, onPay }: { transaction: Transaction; onPay
       <p className="detail-pay-now__footnote">Using your default payment method</p>
     </section>
   );
+}
+
+function buildPageLabel(transaction: Transaction): string | undefined {
+  const parts = [transaction.merchantName];
+  if (transaction.installmentPlan) parts.push('installment plan');
+  const attention = getAttentionReason(transaction);
+  if (attention) parts.push(attention.toLowerCase());
+  return parts.length > 1 ? parts.join(', ') : undefined;
 }
 
 export function TransactionDetailPage() {
@@ -135,7 +146,7 @@ export function TransactionDetailPage() {
       <QueryWrapper query={query} loadingMessage="Loading transaction">
         {(transaction) => (
           <>
-            <h1>{transaction.merchantName}</h1>
+            <h1 aria-label={buildPageLabel(transaction)}>{transaction.merchantName}</h1>
 
             <div className="detail-hero">
               <span className="detail-hero__amount">{formatCurrency(transaction.totalAmount)}</span>
