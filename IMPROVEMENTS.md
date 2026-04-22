@@ -1,8 +1,13 @@
 # IMPROVEMENTS
 
+## Testing
+
+- Component tests currently cover `TransactionListItem` and the utility layer. A production app would expand this with more integration tests, not only testing components, but entire parts of of features
+- E2E tests - I would consider adding e2e tests to ensure our user flows stays intact between iterations
+
 ## Language & locale
 
-- Proper localization of messages using formatjs, react-i18next or similar
+- Proper localization of messages using formatjs, react-i18next or similar - now all messages are hard coded in english
 
 ## Needs attention list
 
