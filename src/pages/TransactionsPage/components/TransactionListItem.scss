@@ -38,12 +38,12 @@
 
   &__date {
     font-size: $font-size-xs;
-    color: $color-text-disabled;
+    color: $color-text-secondary;
   }
 
   &__payment-method {
     font-size: $font-size-xs;
-    color: $color-text-disabled;
+    color: $color-text-secondary;
   }
 
   &__meta {
@@ -60,7 +60,7 @@
 
     &--completed {
       background: $color-success-light;
-      color: $color-success;
+      color: $color-success-dark;
     }
     &--active {
       background: $color-primary-light;
@@ -68,14 +68,14 @@
     }
     &--pending {
       background: $color-warning-light;
-      color: $color-warning;
+      color: $color-warning-dark;
     }
     &--failed {
       background: $color-error-light;
-      color: $color-error;
+      color: $color-error-dark;
     }
     &--cancelled {
-      background: $color-background-tertiary;
+      background: $color-background-secondary;
       color: $color-text-secondary;
     }
   }
