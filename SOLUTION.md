@@ -41,5 +41,16 @@ The detail page derives the installment payment schedule from the plan's `nextPa
 
 It uses screen reader-friendly description lists for semantic key/value details.
 
-The "Pay now" action optimistically patches the TanStack Query cache directly via `queryClient.setQueryData` - both the individual transaction entry and the list. Since the data is static there is no real mutation endpoint to call. With a real backend this would use TanStack Query's `useMutation`, which would call the API and then either invalidate the relevant queries (triggering a refetch) or update the cache from the mutation response. Background refetching is also disabled (`staleTime: Infinity`, `refetchOnWindowFocus: false`) since static data never changes - a real app would remove these defaults and let TanStack Query's normal stale-while-revalidate behaviour apply.
+The "Pay now" action optimistically patches the TanStack Query cache directly via `queryClient.setQueryData` - both the individual transaction entry and the list. Since the data is static there is no real mutation endpoint to call. With a real backend this would use TanStack Query's `useMutation`, which would call the API and then either invalidate the relevant queries (triggering a refetch) or update the cache from the mutation response.
 
+Background refetching is also disabled (`staleTime: Infinity`, `refetchOnWindowFocus: false`) since static data never changes - a real app would remove these defaults and let TanStack Query's normal stale-while-revalidate behaviour apply.
+
+
+### Analytics
+The README mentions working data-driven, so rather than tracking generic page views, the events focus on two actionable funnels.
+
+Filter behaviour - do users who open the filter panel actually apply filters, or do they close it without acting? Events track panel opened, filters applied (with which filters and how many results), panel abandoned, and filters cleared.
+
+Needs attention - the highest-stakes part of the UI. Events track when a user clicks into an attention transaction from the overview, and the full pay-now funnel: initiated, confirmed, and cancelled. This makes it possible to see drop-off between intent and completion.
+
+Page views are tracked via a dedicated `usePageViewTracking` hook wired into the router, so every navigation fires a `page_view` event automatically. In development, React 18 StrictMode mounts effects twice intentionally - this causes duplicate events in dev but has no impact in production.

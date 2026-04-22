@@ -1,8 +1,10 @@
-import { Link, useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import { useGetTransaction } from '../../queries/useGetTransaction';
 import { QueryWrapper } from '../../components/QueryWrapper';
 import { Button } from '../../components/Button';
+import { useAnalytics, ANALYTICS_EVENTS } from '../../hooks/useAnalytics';
 import { formatCurrency } from '../../utils/currencyUtils';
 import { formatDate, formatTransactionDate } from '../../utils/dateUtils';
 import {
@@ -12,16 +14,24 @@ import {
   needsAttention,
   getAttentionReason,
   deriveInstallmentSchedule,
+  applyInstallmentPayment,
 } from '../../utils/transactionUtils';
 import { TRANSACTIONS_QUERY_KEY } from '../../queries/useGetTransactions';
 import type { Transaction, TransactionStatus } from '../../types/transaction';
 import './TransactionDetailPage.scss';
 
-function InstallmentSchedule({ transaction }: { transaction: Transaction }) {
+function InstallmentSchedule({
+  transaction,
+  onPayInstallment,
+}: {
+  transaction: Transaction;
+  onPayInstallment?: () => void;
+}) {
   const { installmentPlan } = transaction;
   if (!installmentPlan) return null;
 
   const items = deriveInstallmentSchedule(installmentPlan);
+  const firstOverdueNumber = items.find((i) => i.overdue)?.number;
 
   return (
     <section className="detail-section">
@@ -41,9 +51,19 @@ function InstallmentSchedule({ transaction }: { transaction: Transaction }) {
             <span className="installment-schedule__number">{item.number}</span>
             <span className="installment-schedule__date">{formatDate(item.date.toISOString())}</span>
             <span className="installment-schedule__amount">{formatCurrency(item.amount)}</span>
-            <span className="installment-schedule__status">
-              {item.paid ? 'Paid' : item.overdue ? 'Overdue' : 'Upcoming'}
-            </span>
+            {item.number === firstOverdueNumber && onPayInstallment ? (
+              <Button
+                variant="outline"
+                className="installment-schedule__pay-btn"
+                onClick={() => onPayInstallment()}
+              >
+                Pay now
+              </Button>
+            ) : (
+              <span className="installment-schedule__status">
+                {item.paid ? 'Paid' : item.overdue ? 'Overdue' : 'Upcoming'}
+              </span>
+            )}
           </li>
         ))}
       </ul>
@@ -69,14 +89,18 @@ function PayNowSection({ transaction, onPay }: { transaction: Transaction; onPay
 
 export function TransactionDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const query = useGetTransaction(id ?? '');
   const queryClient = useQueryClient();
+  const { track } = useAnalytics();
 
-  function handlePayNow() {
-    if (!window.confirm('Pay now using your default payment method?')) return;
+  useEffect(() => {
+    if (query.data) {
+      track(ANALYTICS_EVENTS.TRANSACTION_VIEWED, { transactionId: id });
+    }
+  }, [query.data, id, track]);
 
-    const patch = (t: Transaction): Transaction => ({ ...t, status: 'pending' as TransactionStatus });
-
+  function patchCache(patch: (t: Transaction) => Transaction) {
     queryClient.setQueryData<Transaction>([TRANSACTIONS_QUERY_KEY, id], (old) =>
       old ? patch(old) : old
     );
@@ -85,9 +109,29 @@ export function TransactionDetailPage() {
     );
   }
 
+  function handlePayNow() {
+    track(ANALYTICS_EVENTS.PAY_NOW_INITIATED, { transactionId: id });
+    if (!window.confirm('Pay now using your default payment method?')) {
+      track(ANALYTICS_EVENTS.PAY_NOW_CANCELLED, { transactionId: id });
+      return;
+    }
+    track(ANALYTICS_EVENTS.PAY_NOW_CONFIRMED, { transactionId: id });
+    patchCache((t) => ({ ...t, status: 'pending' as TransactionStatus }));
+  }
+
+  function handlePayInstallment() {
+    track(ANALYTICS_EVENTS.PAY_NOW_INITIATED, { transactionId: id });
+    if (!window.confirm('Pay now using your default payment method?')) {
+      track(ANALYTICS_EVENTS.PAY_NOW_CANCELLED, { transactionId: id });
+      return;
+    }
+    track(ANALYTICS_EVENTS.PAY_NOW_CONFIRMED, { transactionId: id });
+    patchCache((t) => applyInstallmentPayment(t));
+  }
+
   return (
     <>
-      <Link to="/transactions" className="back-link">← Transactions</Link>
+      <button className="back-link" onClick={() => navigate(-1)}>← Back</button>
       <QueryWrapper query={query} loadingMessage="Loading transaction">
         {(transaction) => (
           <>
@@ -95,7 +139,11 @@ export function TransactionDetailPage() {
 
             <div className="detail-hero">
               <span className="detail-hero__amount">{formatCurrency(transaction.totalAmount)}</span>
-              <span className={`detail-hero__status detail-hero__status--${transaction.status}`}>
+              <span
+                className={`detail-hero__status detail-hero__status--${transaction.status}`}
+                aria-live="polite"
+                aria-atomic="true"
+              >
                 {needsAttention(transaction)
                   ? getAttentionReason(transaction)
                   : STATUS_LABELS[transaction.status]}
@@ -119,9 +167,17 @@ export function TransactionDetailPage() {
               </dl>
             </section>
 
-            <InstallmentSchedule transaction={transaction} />
+            <InstallmentSchedule
+              transaction={transaction}
+              onPayInstallment={
+                transaction.installmentPlan &&
+                (transaction.status === 'active' || transaction.status === 'failed')
+                  ? handlePayInstallment
+                  : undefined
+              }
+            />
 
-            {needsAttention(transaction) && (
+            {transaction.status === 'failed' && !transaction.installmentPlan && (
               <PayNowSection transaction={transaction} onPay={handlePayNow} />
             )}
           </>

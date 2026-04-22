@@ -4,12 +4,14 @@ import { QueryWrapper } from '../../components/QueryWrapper';
 import { TransactionList } from '../TransactionsPage/components/TransactionList';
 import { TransactionListItem } from '../TransactionsPage/components/TransactionListItem';
 import { needsAttention, getAttentionReason, getRecentTransactions } from '../../utils/transactionUtils';
+import { useAnalytics, ANALYTICS_EVENTS } from '../../hooks/useAnalytics';
 import './OverviewPage.scss';
 
 const PREVIEW_LIMIT = 5;
 
 export function OverviewPage() {
   const query = useGetTransactions();
+  const { track } = useAnalytics();
 
   return (
     <>
@@ -33,6 +35,12 @@ export function OverviewPage() {
                         key={t.id}
                         transaction={t}
                         attentionReason={getAttentionReason(t) ?? undefined}
+                        onClick={() =>
+                          track(ANALYTICS_EVENTS.ATTENTION_TRANSACTION_CLICKED, {
+                            transactionId: t.id,
+                            reason: getAttentionReason(t),
+                          })
+                        }
                       />
                     ))}
                   </ul>

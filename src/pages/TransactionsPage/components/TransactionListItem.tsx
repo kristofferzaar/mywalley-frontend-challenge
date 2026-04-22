@@ -8,9 +8,10 @@ import './TransactionListItem.scss';
 interface TransactionListItemProps {
   transaction: Transaction;
   attentionReason?: string;
+  onClick?: () => void;
 }
 
-export function TransactionListItem({ transaction, attentionReason }: TransactionListItemProps) {
+export function TransactionListItem({ transaction, attentionReason, onClick }: TransactionListItemProps) {
   const { id, merchantName, totalAmount, status, purchaseDate, paymentMethod } = transaction;
   return (
     <li>
@@ -18,6 +19,7 @@ export function TransactionListItem({ transaction, attentionReason }: Transactio
         to={`/transactions/${id}`}
         className="transaction-list-item"
         aria-label={formatTransactionLabel(transaction)}
+        onClick={onClick}
       >
         <div className="transaction-list-item__content">
           <span className="transaction-list-item__amount">{formatCurrency(totalAmount)}</span>

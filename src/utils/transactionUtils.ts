@@ -142,6 +142,27 @@ export interface InstallmentItem {
   overdue: boolean;
 }
 
+export function applyInstallmentPayment(transaction: Transaction): Transaction {
+  const plan = transaction.installmentPlan!;
+  const newPaid = plan.paidInstallments + 1;
+  const newNext = new Date(plan.nextPaymentDate);
+  if (plan.frequency === 'monthly') {
+    newNext.setMonth(newNext.getMonth() + 1);
+  } else {
+    newNext.setDate(newNext.getDate() + 14);
+  }
+  const completed = newPaid >= plan.totalInstallments;
+  return {
+    ...transaction,
+    status: completed ? 'completed' : 'active',
+    installmentPlan: {
+      ...plan,
+      paidInstallments: newPaid,
+      nextPaymentDate: newNext.toISOString(),
+    },
+  };
+}
+
 export function deriveInstallmentSchedule(plan: InstallmentPlan): InstallmentItem[] {
   const { totalInstallments, paidInstallments, nextPaymentDate, installmentAmount, frequency } = plan;
   const next = new Date(nextPaymentDate);
