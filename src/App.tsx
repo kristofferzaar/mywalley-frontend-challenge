@@ -15,6 +15,7 @@ const queryClient = new QueryClient({
       staleTime: Infinity,
       refetchOnWindowFocus: false,
       refetchOnReconnect: false,
+      retry: false,
     },
   },
 });
@@ -39,9 +40,6 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <a href="#main-content" className="skip-link">
-          Skip to main content
-        </a>
         <AppRoutes />
       </Router>
     </QueryClientProvider>
