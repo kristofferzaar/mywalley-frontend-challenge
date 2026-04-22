@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react';
+import { lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './styles/global.scss';
@@ -25,16 +25,14 @@ function AppRoutes() {
   useScrollToTop();
   usePageViewTracking();
   return (
-    <Suspense>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<OverviewPage />} />
-          <Route path="/transactions" element={<TransactionsPage />} />
-          <Route path="/transactions/:id" element={<TransactionDetailPage />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Suspense>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<OverviewPage />} />
+        <Route path="/transactions" element={<TransactionsPage />} />
+        <Route path="/transactions/:id" element={<TransactionDetailPage />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
 

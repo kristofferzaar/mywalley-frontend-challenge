@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import './Layout.scss';
 
@@ -13,7 +14,9 @@ export function Layout() {
         />
       </header>
       <main id="main-content" tabIndex={-1}>
-        <Outlet />
+        <Suspense fallback={<h1 className="sr-only">Loading…</h1>}>
+          <Outlet />
+        </Suspense>
       </main>
       <nav className="bottom-nav" aria-label="Main navigation">
         <NavLink to="/" end className="bottom-nav__item">Overview</NavLink>
