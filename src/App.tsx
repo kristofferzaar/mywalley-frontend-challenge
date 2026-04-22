@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import './styles/global.scss';
 import { Layout } from './components/Layout';
 import { useScrollToTop } from './hooks/useScrollToTop';
+import { usePageViewTracking } from './hooks/usePageViewTracking';
 
 const OverviewPage = lazy(() => import('./pages/OverviewPage').then((m) => ({ default: m.OverviewPage })));
 const TransactionsPage = lazy(() => import('./pages/TransactionsPage').then((m) => ({ default: m.TransactionsPage })));
@@ -22,6 +23,7 @@ const queryClient = new QueryClient({
 
 function AppRoutes() {
   useScrollToTop();
+  usePageViewTracking();
   return (
     <Suspense>
       <Routes>

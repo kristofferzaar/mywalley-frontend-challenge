@@ -7,6 +7,10 @@
   color: $color-text-secondary;
   text-decoration: none;
   margin-bottom: $spacing-md;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 
   &:hover {
     color: $color-text-primary;
@@ -102,9 +106,10 @@
     grid-template-columns: 1.5rem 1fr auto auto;
     align-items: center;
     gap: $spacing-sm;
-    padding: $spacing-sm 0;
+    padding: $spacing-xs 0;
     border-bottom: 1px solid $color-border;
     font-size: $font-size-sm;
+    min-height: $touch-target-min + $spacing-sm;
 
     &:first-child {
       border-top: 1px solid $color-border;
@@ -136,6 +141,11 @@
     font-size: $font-size-xs;
     color: inherit;
     text-align: right;
+  }
+
+  &__pay-btn {
+    font-size: $font-size-xs;
+    padding: $spacing-xs $spacing-sm;
   }
 
   &__summary {

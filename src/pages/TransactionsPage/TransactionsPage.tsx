@@ -5,7 +5,8 @@ import { Button } from '../../components/Button';
 import { TransactionList } from './components/TransactionList';
 import { FilterPanel } from './components/FilterPanel';
 import { useTransactionFilters } from './hooks/useTransactionFilters';
-import type { Transaction } from '../../types/transaction';
+import { useAnalytics, ANALYTICS_EVENTS } from '../../hooks/useAnalytics';
+import type { Transaction, TransactionFilters } from '../../types/transaction';
 import './TransactionsPage.scss';
 
 function TransactionsContent({ data }: { data: Transaction[] }) {
@@ -13,6 +14,7 @@ function TransactionsContent({ data }: { data: Transaction[] }) {
   const toggleRef = useRef<HTMLButtonElement>(null);
   const { appliedFilters, filteredTransactions, filtersActive, applyFilters, clearFilters } =
     useTransactionFilters(data);
+  const { track } = useAnalytics();
 
   const activeFilterCount = [
     appliedFilters.status !== 'all',
@@ -20,18 +22,35 @@ function TransactionsContent({ data }: { data: Transaction[] }) {
     appliedFilters.dateRange !== 'all',
   ].filter(Boolean).length;
 
+  function handleTogglePanel() {
+    const opening = !isPanelOpen;
+    setIsPanelOpen(opening);
+    if (opening) {
+      track(ANALYTICS_EVENTS.FILTER_PANEL_OPENED);
+    } else {
+      track(ANALYTICS_EVENTS.FILTER_PANEL_ABANDONED);
+    }
+  }
+
   function closePanel() {
     setIsPanelOpen(false);
     toggleRef.current?.focus();
   }
 
-  function handleApply(filters: typeof appliedFilters) {
+  function handleApply(filters: TransactionFilters) {
     applyFilters(filters);
+    track(ANALYTICS_EVENTS.FILTERS_APPLIED, {
+      status: filters.status,
+      paymentType: filters.paymentType,
+      dateRange: filters.dateRange,
+      resultCount: filteredTransactions.length,
+    });
     closePanel();
   }
 
   function handleClear() {
     clearFilters();
+    track(ANALYTICS_EVENTS.FILTERS_CLEARED);
   }
 
   const countLabel = filtersActive
@@ -47,7 +66,7 @@ function TransactionsContent({ data }: { data: Transaction[] }) {
           className={filtersActive ? 'is-active' : undefined}
           aria-expanded={isPanelOpen}
           aria-controls="filter-panel"
-          onClick={() => setIsPanelOpen((open) => !open)}
+          onClick={handleTogglePanel}
         >
           {isPanelOpen
             ? 'Close'

@@ -9,6 +9,8 @@
  * analytics.track('transaction_viewed', { transactionId: 'txn_001' });
  */
 
+import { useCallback } from 'react';
+
 interface AnalyticsEvent {
   event: string;
   properties?: Record<string, unknown>;
@@ -16,7 +18,7 @@ interface AnalyticsEvent {
 }
 
 export const useAnalytics = () => {
-  const track = (event: string, properties?: Record<string, unknown>) => {
+  const track = useCallback((event: string, properties?: Record<string, unknown>) => {
     const analyticsEvent: AnalyticsEvent = {
       event,
       properties,
@@ -31,26 +33,31 @@ export const useAnalytics = () => {
 
     // TODO: Send to actual analytics service
     // Example: sendToAnalyticsService(analyticsEvent);
-  };
+  }, []);
 
   return { track };
 };
 
-// Common event names you might want to track:
 export const ANALYTICS_EVENTS = {
   // Page views
   PAGE_VIEW: 'page_view',
-  
-  // Transaction events
   TRANSACTION_LIST_VIEWED: 'transaction_list_viewed',
   TRANSACTION_VIEWED: 'transaction_viewed',
-  
-  // Filter events
-  FILTER_APPLIED: 'filter_applied',
-  FILTER_CLEARED: 'filter_cleared',
+
+  // Filter funnel - did opening the panel lead to action?
+  FILTER_PANEL_OPENED: 'filter_panel_opened',
+  FILTER_PANEL_ABANDONED: 'filter_panel_abandoned',
+  FILTERS_APPLIED: 'filters_applied',
+  FILTERS_CLEARED: 'filters_cleared',
   SEARCH_PERFORMED: 'search_performed',
-  
-  // Interaction events
+
+  // Needs attention - highest-stakes interactions
+  ATTENTION_TRANSACTION_CLICKED: 'attention_transaction_clicked',
+  PAY_NOW_INITIATED: 'pay_now_initiated',
+  PAY_NOW_CONFIRMED: 'pay_now_confirmed',
+  PAY_NOW_CANCELLED: 'pay_now_cancelled',
+
+  // Future interactions (sort, search not yet implemented)
   SORT_CHANGED: 'sort_changed',
   PAYMENT_METHOD_CLICKED: 'payment_method_clicked',
 } as const;
