@@ -34,10 +34,12 @@ Filter state is split between `FilterPanel` (draft - what's in the form) and `us
 
 The custom date range uses native `<input type="date">`, which provides a built-in accessible picker on all modern browsers. In a production environment this would be replaced with a fully custom date picker, or a vetted third party library.
 
+Opted to use url query params to save the filter state between navigation & page loads, rather than relying on context or global state.
+
 ### Transaction Detail & Pay Now
 The detail page derives the installment payment schedule from the plan's `nextPaymentDate` & paidInstallments, since individual installment dates aren't part of the data model.
 
-It uses sr-friendly description lists for semantic key/value details.
+It uses screen reader-friendly description lists for semantic key/value details.
 
 The "Pay now" action optimistically patches the TanStack Query cache directly via `queryClient.setQueryData` - both the individual transaction entry and the list. Since the data is static there is no real mutation endpoint to call. With a real backend this would use TanStack Query's `useMutation`, which would call the API and then either invalidate the relevant queries (triggering a refetch) or update the cache from the mutation response. Background refetching is also disabled (`staleTime: Infinity`, `refetchOnWindowFocus: false`) since static data never changes - a real app would remove these defaults and let TanStack Query's normal stale-while-revalidate behaviour apply.
 
