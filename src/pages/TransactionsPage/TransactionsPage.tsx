@@ -6,13 +6,20 @@ import { TransactionList } from './components/TransactionList';
 import { FilterPanel } from './components/FilterPanel';
 import { useTransactionFilters } from './hooks/useTransactionFilters';
 import { useAnalytics, ANALYTICS_EVENTS } from '../../hooks/useAnalytics';
-import type { Transaction, TransactionFilters } from '../../types/transaction';
+import type { Transaction, TransactionFilters, SortOption } from '../../types/transaction';
 import './TransactionsPage.scss';
+
+const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+  { value: 'date_desc', label: 'Newest first' },
+  { value: 'date_asc', label: 'Oldest first' },
+  { value: 'amount_desc', label: 'Amount: high to low' },
+  { value: 'amount_asc', label: 'Amount: low to high' },
+];
 
 function TransactionsContent({ data }: { data: Transaction[] }) {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const toggleRef = useRef<HTMLButtonElement>(null);
-  const { appliedFilters, filteredTransactions, filtersActive, applyFilters, clearFilters } =
+  const { appliedFilters, filteredTransactions, filtersActive, sort, applyFilters, clearFilters, setSort } =
     useTransactionFilters(data);
   const { track } = useAnalytics();
 
@@ -20,6 +27,7 @@ function TransactionsContent({ data }: { data: Transaction[] }) {
     appliedFilters.status !== 'all',
     appliedFilters.paymentType !== 'all',
     appliedFilters.dateRange !== 'all',
+    appliedFilters.search !== '',
   ].filter(Boolean).length;
 
   function handleTogglePanel() {
@@ -45,7 +53,15 @@ function TransactionsContent({ data }: { data: Transaction[] }) {
       dateRange: filters.dateRange,
       resultCount: filteredTransactions.length,
     });
+    if (filters.search) {
+      track(ANALYTICS_EVENTS.SEARCH_PERFORMED, { query: filters.search, resultCount: filteredTransactions.length });
+    }
     closePanel();
+  }
+
+  function handleSortChange(value: SortOption) {
+    setSort(value);
+    track(ANALYTICS_EVENTS.SORT_CHANGED, { sort: value });
   }
 
   function handleClear() {
@@ -60,6 +76,17 @@ function TransactionsContent({ data }: { data: Transaction[] }) {
   return (
     <>
       <div className="transactions-header">
+        <label htmlFor="sort-select" className="sr-only">Sort by</label>
+        <select
+          id="sort-select"
+          className="transactions-header__sort"
+          value={sort}
+          onChange={(e) => handleSortChange(e.target.value as SortOption)}
+        >
+          {SORT_OPTIONS.map(({ value, label }) => (
+            <option key={value} value={value}>{label}</option>
+          ))}
+        </select>
         <Button
           ref={toggleRef}
           variant="outline"

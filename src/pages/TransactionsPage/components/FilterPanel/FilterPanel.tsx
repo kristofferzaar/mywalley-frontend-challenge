@@ -49,6 +49,16 @@ export function FilterPanel({ id, appliedFilters, onApply, onClear }: FilterPane
     <form id={id} className="filter-panel" onSubmit={handleSubmit}>
       <div className="filter-panel__fields">
         <div className="filter-panel__field">
+          <label htmlFor="filter-search">Merchant</label>
+          <input
+            id="filter-search"
+            type="search"
+            value={draft.search}
+            placeholder="e.g. Spotify"
+            onChange={(e) => setDraft({ ...draft, search: e.target.value })}
+          />
+        </div>
+        <div className="filter-panel__field">
           <label htmlFor="filter-status">Status</label>
           <select
             ref={firstSelectRef}
