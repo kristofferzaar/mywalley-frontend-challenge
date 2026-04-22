@@ -6,6 +6,7 @@ import type {
   TransactionFilters,
   DateRangeOption,
   InstallmentPlan,
+  SortOption,
 } from '../types/transaction';
 import { formatCurrency } from './currencyUtils';
 import { formatTransactionDate, isPastDate, isDateInRange } from './dateUtils';
@@ -71,6 +72,7 @@ export const DEFAULT_FILTERS: TransactionFilters = {
   dateRange: 'all',
   dateFrom: '',
   dateTo: '',
+  search: '',
 };
 
 export function filterByStatus(
@@ -117,12 +119,21 @@ export function filterByDateRange(
   return transactions.filter((t) => new Date(t.purchaseDate) >= cutoff);
 }
 
+export function filterBySearch(transactions: Transaction[], search: string): Transaction[] {
+  if (!search.trim()) return transactions;
+  const q = search.trim().toLowerCase();
+  return transactions.filter((t) => t.merchantName.toLowerCase().includes(q));
+}
+
 export function applyFilters(transactions: Transaction[], filters: TransactionFilters): Transaction[] {
-  return filterByDateRange(
-    filterByPaymentType(filterByStatus(transactions, filters.status), filters.paymentType),
-    filters.dateRange,
-    filters.dateFrom,
-    filters.dateTo
+  return filterBySearch(
+    filterByDateRange(
+      filterByPaymentType(filterByStatus(transactions, filters.status), filters.paymentType),
+      filters.dateRange,
+      filters.dateFrom,
+      filters.dateTo
+    ),
+    filters.search
   );
 }
 
@@ -130,8 +141,20 @@ export function isFiltersActive(filters: TransactionFilters): boolean {
   return (
     filters.status !== DEFAULT_FILTERS.status ||
     filters.paymentType !== DEFAULT_FILTERS.paymentType ||
-    filters.dateRange !== DEFAULT_FILTERS.dateRange
+    filters.dateRange !== DEFAULT_FILTERS.dateRange ||
+    filters.search !== DEFAULT_FILTERS.search
   );
+}
+
+export const DEFAULT_SORT: SortOption = 'date_desc';
+
+export function sortTransactions(transactions: Transaction[], sort: SortOption): Transaction[] {
+  return [...transactions].sort((a, b) => {
+    if (sort === 'date_desc') return new Date(b.purchaseDate).getTime() - new Date(a.purchaseDate).getTime();
+    if (sort === 'date_asc') return new Date(a.purchaseDate).getTime() - new Date(b.purchaseDate).getTime();
+    if (sort === 'amount_desc') return b.totalAmount - a.totalAmount;
+    return a.totalAmount - b.totalAmount;
+  });
 }
 
 export interface InstallmentItem {

@@ -36,10 +36,13 @@ export interface TransactionsData {
 
 export type DateRangeOption = 'last30' | 'last90' | 'lastYear' | 'custom' | 'all';
 
+export type SortOption = 'date_desc' | 'date_asc' | 'amount_desc' | 'amount_asc';
+
 export interface TransactionFilters {
   status: TransactionStatus | 'all';
   paymentType: PaymentType | 'all';
   dateRange: DateRangeOption;
   dateFrom: string;
   dateTo: string;
+  search: string;
 }
